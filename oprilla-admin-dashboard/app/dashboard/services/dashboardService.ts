@@ -1,28 +1,23 @@
-export const getDashboardData = () => {
-  return {
-    bookings: 0,
-    activeCalls: 0,
-    occupancy: "85%",
-    customers: 12,
-  };
-};
+const API_URL = "http://localhost:5232/api";
 
-export const getRecentActivities = () => {
-  return [
+
+const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwidW5pcXVlX25hbWUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AcmVzdGF1cmFudC5jb20iLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbiIsImp0aSI6IjVkM2Q4OTI0LWQ5OGItNDc4ZC1hZDQzLWQ5NDdlYzVjYmQ2ZCIsIm5iZiI6MTc4MjgyNjQ0NywiZXhwIjoxNzgyODU1MjQ3LCJpc3MiOiJSZXN0YXVyYW50QXBpIiwiYXVkIjoiUmVzdGF1cmFudENsaWVudCJ9.eHbuCvyubQOtkmk5cS4fvzuKzXWQL5rZFksuHR2J3cA";
+
+export async function getDashboardData() {
+  const response = await fetch(
+    `${API_URL}/admin/appointments/dashboard`,
     {
-      title: "Booking Confirmed",
-      description: "Table for 4 reserved at 8:00 PM",
-      time: "5 minutes ago",
-    },
-    {
-      title: "New Customer Registered",
-      description: "Customer account created successfully",
-      time: "20 minutes ago",
-    },
-    {
-      title: "Reservation Rescheduled",
-      description: "Booking moved from 7:30 PM to 8:15 PM",
-      time: "1 hour ago",
-    },
-  ];
-};
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${TOKEN}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch dashboard data");
+  }
+
+  return response.json();
+}

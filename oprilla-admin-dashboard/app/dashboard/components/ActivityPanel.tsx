@@ -1,12 +1,53 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import AIActivityCard from "./AIActivityCard";
-import { AI_ACTIVITY_DATA } from "../constants/dashboardConstants";
+
+type AIActivity = {
+  totalCalls: number;
+  successfulBookings: number;
+  failedBookings: number;
+  pendingCalls: number;
+};
+
+async function getAIActivity(): Promise<AIActivity> {
+  // TODO: Replace with actual API call from dashboardService
+  return {
+    totalCalls: 0,
+    successfulBookings: 0,
+    failedBookings: 0,
+    pendingCalls: 0,
+  };
+}
 
 export default function ActivityPanel() {
+  const [activity, setActivity] = useState<AIActivity | null>(null);
+
+  useEffect(() => {
+    async function loadActivity() {
+      try {
+        const data = await getAIActivity();
+        setActivity(data);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    loadActivity();
+  }, []);
+
+  if (!activity) {
+    return (
+      <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
+        Loading...
+      </div>
+    );
+  }
+
   return (
     <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
-      {/* Header */}
       <div className="flex items-start justify-between mb-8">
-        <h2 className="text-[18px] font-serif font-semibold text-[#2B2B2B]">
+        <h2 className="text-[18px] font-serif font-semibold">
           AI Activity
         </h2>
 
@@ -16,19 +57,47 @@ export default function ActivityPanel() {
       </div>
 
       <div className="space-y-8">
-        {AI_ACTIVITY_DATA.map((activity, index) => (
-          <AIActivityCard
-            key={index}
-            title={activity.title}
-            status={activity.status}
-            statusBg={activity.statusBg}
-            statusText={activity.statusText}
-            dotColor={activity.dotColor}
-            description={activity.description}
-            footer={activity.footer}
-            italic={activity.italic}
-          />
-        ))}
+
+        <AIActivityCard
+          title="Total Calls"
+          status="TODAY"
+          statusBg="bg-blue-100"
+          statusText="text-blue-700"
+          dotColor="bg-blue-600"
+          description={activity.totalCalls.toString()}
+          footer="AI Calls"
+        />
+
+        <AIActivityCard
+          title="Successful Bookings"
+          status="SUCCESS"
+          statusBg="bg-green-100"
+          statusText="text-green-700"
+          dotColor="bg-green-600"
+          description={activity.successfulBookings.toString()}
+          footer="Bookings"
+        />
+
+        <AIActivityCard
+          title="Failed Bookings"
+          status="FAILED"
+          statusBg="bg-red-100"
+          statusText="text-red-700"
+          dotColor="bg-red-600"
+          description={activity.failedBookings.toString()}
+          footer="Bookings"
+        />
+
+        <AIActivityCard
+          title="Pending Calls"
+          status="PENDING"
+          statusBg="bg-yellow-100"
+          statusText="text-yellow-700"
+          dotColor="bg-yellow-500"
+          description={activity.pendingCalls.toString()}
+          footer="Calls"
+        />
+
       </div>
     </div>
   );
