@@ -1,28 +1,66 @@
-export const getDashboardData = () => {
-  return {
-    bookings: 0,
-    activeCalls: 0,
-    occupancy: "85%",
-    customers: 12,
-  };
-};
+const API_URL = "http://localhost:5232/api";
 
-export const getRecentActivities = () => {
-  return [
+
+const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwidW5pcXVlX25hbWUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AcmVzdGF1cmFudC5jb20iLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbiIsImp0aSI6IjA3NzQzNzgxLWU2MDctNDM3Zi1hZTg3LTMxMjNlNDI1ZTgyNSIsIm5iZiI6MTc4Mjk3MTQ3NywiZXhwIjoxNzgzMDAwMjc3LCJpc3MiOiJSZXN0YXVyYW50QXBpIiwiYXVkIjoiUmVzdGF1cmFudENsaWVudCJ9.o3EYqtt9ZWPiV_y4ropFQBVlUGFRq-hogUdOJdFpuhY";
+
+export async function getDashboardData() {
+  const response = await fetch(
+    `${API_URL}/admin/appointments/dashboard`,
     {
-      title: "Booking Confirmed",
-      description: "Table for 4 reserved at 8:00 PM",
-      time: "5 minutes ago",
-    },
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${TOKEN}`,
+        "Content-Type": "application/json",
+      },
+    }
+
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch dashboard data");
+  }
+
+  return response.json();
+}
+
+export async function getAIActivity() {
+  const response = await fetch(
+    `${API_URL}/admin/appointments/ai-activity`,
     {
-      title: "New Customer Registered",
-      description: "Customer account created successfully",
-      time: "20 minutes ago",
-    },
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${TOKEN}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch AI activity");
+  }
+
+  const result = await response.json();
+  console.log("AI Activity:", result);
+  return result.data;
+}
+
+export async function getWeeklyRevenue() {
+  const response = await fetch(
+    `${API_URL}/admin/appointments/weekly-revenue`,
     {
-      title: "Reservation Rescheduled",
-      description: "Booking moved from 7:30 PM to 8:15 PM",
-      time: "1 hour ago",
-    },
-  ];
-};
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${TOKEN}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch weekly revenue");
+  }
+
+  const result = await response.json();
+  console.log(result);
+  return result.data;
+}
