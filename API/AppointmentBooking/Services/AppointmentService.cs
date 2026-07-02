@@ -58,14 +58,16 @@ public class AppointmentService(AppDbContext db) : IAppointmentService
                            || a.CustomerPhone.Contains(s)
                            || (a.CustomerEmail != null && a.CustomerEmail.ToLower().Contains(s)));
         }
-
         var total = await q.CountAsync();
-        var items = await q
+
+        var allItems = await q.ToListAsync();
+
+        var items = allItems
             .OrderByDescending(a => a.AppointmentDate)
             .ThenBy(a => a.StartTime)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
-            .ToListAsync();
+            .ToList();
 
         return new PagedResponse<AppointmentResponse>
         {
@@ -94,37 +96,37 @@ public class AppointmentService(AppDbContext db) : IAppointmentService
         return list.Select(Map).ToList();
     }
 
-    public async Task<DashboardStatsResponse> GetDashboardAsync()
-    {
-        var now = DateTime.UtcNow;
-        var todayStart = now.Date;
-        var weekStart = todayStart.AddDays(-(int)now.DayOfWeek);
-        var monthStart = new DateTime(now.Year, now.Month, 1, 0, 0, 0, DateTimeKind.Utc);
-
-        var all = await _db.Appointments.Include(a => a.Table).ToListAsync();
-
-        var upcoming = all
-            .Where(a => a.AppointmentDate.Date == todayStart
-                     && a.Status == AppointmentStatus.Confirmed
-                     && a.StartTime >= now.TimeOfDay)
-            .OrderBy(a => a.StartTime)
-            .Take(10)
-            .Select(Map)
-            .ToList();
-
-        return new DashboardStatsResponse
+        public async Task<DashboardStatsResponse> GetDashboardAsync()
         {
-            TotalToday = all.Count(a => a.AppointmentDate.Date == todayStart),
-            TotalThisWeek = all.Count(a => a.AppointmentDate >= weekStart),
-            TotalThisMonth = all.Count(a => a.AppointmentDate >= monthStart),
-            PendingConfirmations = all.Count(a => a.Status == AppointmentStatus.Pending),
-            CancelledToday = all.Count(a => a.AppointmentDate.Date == todayStart && a.Status == AppointmentStatus.Cancelled),
-            TotalGuestsConfirmed = all.Where(a => a.Status == AppointmentStatus.Confirmed).Sum(a => a.GuestCount),
-            AppointmentsBySource = all.GroupBy(a => a.Source.ToString()).ToDictionary(g => g.Key, g => g.Count()),
-            AppointmentsByStatus = all.GroupBy(a => a.Status.ToString()).ToDictionary(g => g.Key, g => g.Count()),
-            UpcomingToday = upcoming
-        };
-    }
+            var now = DateTime.UtcNow;
+            var todayStart = now.Date;
+            var weekStart = todayStart.AddDays(-(int)now.DayOfWeek);
+            var monthStart = new DateTime(now.Year, now.Month, 1, 0, 0, 0, DateTimeKind.Utc);
+
+            var all = await _db.Appointments.Include(a => a.Table).ToListAsync();
+
+            var upcoming = all
+                .Where(a => a.AppointmentDate.Date == todayStart
+                         && a.Status == AppointmentStatus.Confirmed
+                         && a.StartTime >= now.TimeOfDay)
+                .OrderBy(a => a.StartTime)
+                .Take(10)
+                .Select(Map)
+                .ToList();
+
+            return new DashboardStatsResponse
+            {
+                TotalToday = all.Count(a => a.AppointmentDate.Date == todayStart),
+                 TotalThisWeek = all.Count(a => a.AppointmentDate >= weekStart),
+                TotalThisMonth = all.Count(a => a.AppointmentDate >= monthStart),
+                PendingConfirmations = all.Count(a => a.Status == AppointmentStatus.Pending),
+                CancelledToday = all.Count(a => a.AppointmentDate.Date == todayStart && a.Status == AppointmentStatus.Cancelled),
+                TotalGuestsConfirmed = all.Where(a => a.Status == AppointmentStatus.Confirmed).Sum(a => a.GuestCount),
+                AppointmentsBySource = all.GroupBy(a => a.Source.ToString()).ToDictionary(g => g.Key, g => g.Count()),
+                AppointmentsByStatus = all.GroupBy(a => a.Status.ToString()).ToDictionary(g => g.Key, g => g.Count()),
+                UpcomingToday = upcoming
+            };
+        }
 
     public async Task<List<AvailableSlotResponse>> GetAvailabilityAsync(AvailabilityQueryRequest req)
     {
@@ -266,6 +268,34 @@ public class AppointmentService(AppDbContext db) : IAppointmentService
         await _db.SaveChangesAsync();
         return true;
     }
+
+    public async Task<List<WeeklyRevenueResponse>> GetWeeklyRevenueAsync()
+    {
+        return await Task.FromResult(new List<WeeklyRevenueResponse>
+    {
+        new() { Day = "Mon", Revenue = 4200 },
+        new() { Day = "Tue", Revenue = 0 },
+        new() { Day = "Wed", Revenue = 0 },
+        new() { Day = "Thu", Revenue = 0 },
+        new() { Day = "Fri", Revenue = 8400 },
+        new() { Day = "Sat", Revenue = 11200 },
+        new() { Day = "Sun", Revenue = 0 }
+    });
+    }
+
+    public async Task<AIActivityResponse> GetAIActivityAsync()
+    {
+        Console.WriteLine("AI Activity API called");
+
+        return await Task.FromResult(new AIActivityResponse
+        {
+            TotalCalls = 125,
+            SuccessfulBookings = 100,
+            FailedBookings = 25,
+            PendingCalls = 0
+        });
+    }
+
 
     // ═══════════════════════════════════════════════════════════════
     //  HELPERS
