@@ -58,17 +58,15 @@ public class AppointmentService(AppDbContext db) : IAppointmentService
                            || a.CustomerPhone.Contains(s)
                            || (a.CustomerEmail != null && a.CustomerEmail.ToLower().Contains(s)));
         }
+
         var total = await q.CountAsync();
 
-        var allItems = await q.ToListAsync();
-
-        var items = allItems
+        var items = await q
             .OrderByDescending(a => a.AppointmentDate)
             .ThenBy(a => a.StartTime)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
-            .ToList();
-
+            .ToListAsync();
         return new PagedResponse<AppointmentResponse>
         {
             Items = items.Select(Map).ToList(),

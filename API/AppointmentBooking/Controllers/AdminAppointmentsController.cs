@@ -71,7 +71,7 @@ public class AdminAppointmentsController(IAppointmentService svc) : ControllerBa
         return Ok(ApiResponse<DashboardStatsResponse>.Ok(data));
     }
     [HttpGet("weekly-revenue")]
-    [AllowAnonymous]
+    
     [ProducesResponseType(typeof(ApiResponse<List<WeeklyRevenueResponse>>), 200)]
     public async Task<IActionResult> WeeklyRevenue()
     {
@@ -80,7 +80,7 @@ public class AdminAppointmentsController(IAppointmentService svc) : ControllerBa
     }
 
     [HttpGet("ai-activity")]
-    [AllowAnonymous]
+    
     [ProducesResponseType(typeof(ApiResponse<AIActivityResponse>), 200)]
     public async Task<IActionResult> AIActivity()
     {

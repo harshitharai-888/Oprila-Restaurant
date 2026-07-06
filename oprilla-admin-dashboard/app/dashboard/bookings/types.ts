@@ -1,7 +1,7 @@
 export interface Reservation {
   id: number;
   customer: string;
-  subtitle: string;
+  subtitle?: string;
   guests: number;
   table: string;
   status: string;

@@ -31,6 +31,9 @@ public interface IAppointmentService
     Task<DashboardStatsResponse> GetDashboardAsync();
     Task<List<AvailableSlotResponse>> GetAvailabilityAsync(AvailabilityQueryRequest req);
 
+    Task<AIActivityResponse> GetAIActivityAsync();
+    Task<List<WeeklyRevenueResponse>> GetWeeklyRevenueAsync();
+
     Task<AppointmentResponse> CreateAsync(CreateAppointmentRequest req, string? callSessionId = null);
     Task<AppointmentResponse?> UpdateAsync(int id, UpdateAppointmentRequest req);
     Task<bool> CancelAsync(int id, string? reason = null);
