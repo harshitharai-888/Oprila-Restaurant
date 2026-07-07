@@ -26,7 +26,7 @@ export interface ConversationTranscript {
 const API_URL = "http://localhost:5232/api";
 
 const TOKEN =
-  "YOUR_JWT_TOKEN_HERE";
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwidW5pcXVlX25hbWUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AcmVzdGF1cmFudC5jb20iLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbiIsImp0aSI6IjA0YmE0MjdmLTBkZjMtNDA3My1hOGFkLWEzYjI4MTZkODhmOCIsIm5iZiI6MTc4MzQxMDI1OSwiZXhwIjoxNzgzNDM5MDU5LCJpc3MiOiJSZXN0YXVyYW50QVBJIiwiYXVkIjoiUmVzdGF1cmFudEFQSUNsaWVudHMifQ.aevXJNIhRo6KvDBc7UiQQqmLOB-wAx2IBiiQw8AgiD8";
 
 export async function getAppointments(): Promise<Appointment[]> {
   try {
