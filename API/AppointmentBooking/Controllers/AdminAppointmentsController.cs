@@ -72,7 +72,10 @@ public class AdminAppointmentsController(IAppointmentService svc) : ControllerBa
     }
 
     [HttpGet("recent-activities")]
-    
+    [Authorize]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetRecentActivities()
     {
         var result = await _svc.GetRecentActivityAsync();
@@ -86,11 +89,20 @@ public class AdminAppointmentsController(IAppointmentService svc) : ControllerBa
     }
 
     [HttpGet("conversation-transcript")]
-    
+    [Authorize]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetConversationTranscript()
     {
         var result = await _svc.GetConversationTranscriptAsync();
-        return Ok(result);
+
+        return Ok(new
+        {
+            success = true,
+            message = "Success",
+            data = result
+        });
     }
 
     /// <summary>Get a single appointment with full detail. [Admin | Staff]</summary>
