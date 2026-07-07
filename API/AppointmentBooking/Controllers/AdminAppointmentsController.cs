@@ -70,22 +70,6 @@ public class AdminAppointmentsController(IAppointmentService svc) : ControllerBa
         var data = await _svc.GetDashboardAsync();
         return Ok(ApiResponse<DashboardStatsResponse>.Ok(data));
     }
-    [HttpGet("weekly-revenue")]
-    [ProducesResponseType(typeof(ApiResponse<List<WeeklyRevenueResponse>>), 200)]
-    public async Task<IActionResult> WeeklyRevenue()
-    {
-        var data = await _svc.GetWeeklyRevenueAsync();
-        return Ok(ApiResponse<List<WeeklyRevenueResponse>>.Ok(data));
-    }
-
-    [HttpGet("ai-activity")]
-    [ProducesResponseType(typeof(ApiResponse<AIActivityResponse>), 200)]
-    public async Task<IActionResult> AIActivity()
-    {
-        var data = await _svc.GetAIActivityAsync();
-        return Ok(ApiResponse<AIActivityResponse>.Ok(data));
-    }
-
 
     /// <summary>Get a single appointment with full detail. [Admin | Staff]</summary>
     [HttpGet("{id:int}")]
