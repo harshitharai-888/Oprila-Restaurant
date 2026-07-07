@@ -18,6 +18,7 @@ using RestaurantApi.AppointmentBooking.Services;
 using RestaurantApi.Dashboard.Responses;
 using RestaurantApi.Shared.Responses;
 
+
 namespace RestaurantApi.AppointmentBooking.Controllers;
 
 /// <summary>
@@ -69,6 +70,29 @@ public class AdminAppointmentsController(IAppointmentService svc) : ControllerBa
     {
         var data = await _svc.GetDashboardAsync();
         return Ok(ApiResponse<DashboardStatsResponse>.Ok(data));
+    }
+
+    [HttpGet("recent-activities")]
+    
+    
+    public async Task<IActionResult> GetRecentActivities()
+    {
+        var result = await _svc.GetRecentActivityAsync();
+
+        return Ok(new
+        {
+            success = true,
+            message = "Success",
+            data = result
+        });
+    }
+
+    [HttpGet("conversation-transcript")]
+    
+    public async Task<IActionResult> GetConversationTranscript()
+    {
+        var result = await _svc.GetConversationTranscriptAsync();
+        return Ok(result);
     }
 
     /// <summary>Get a single appointment with full detail. [Admin | Staff]</summary>
