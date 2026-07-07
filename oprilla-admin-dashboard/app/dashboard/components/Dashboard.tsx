@@ -1,53 +1,104 @@
+"use client";
+
+import { Calendar, CalendarDays, Clock3, Users } from "lucide-react";
 import Header from "./Header";
 import StatCard from "./StatCard";
 import WeeklyRevenueChart from "./WeeklyRevenueChart";
 import ActivityPanel from "./ActivityPanel";
-import { DASHBOARD_STATS } from "../constants/dashboardConstants";
+import { useDashboard } from "../hooks/useDashboard";
 
 export default function Dashboard() {
-  return (
-    <main className="flex-1 bg-[#F8F7F4] px-8 py-8 overflow-y-auto">
-      <div className="w-full">
+  const { dashboardData, loading, error } = useDashboard();
 
+if (loading) {
+  return <div>Loading...</div>;
+}
+
+if (error) {
+  return (
+  <div className="flex items-center justify-center h-full text-red-600">
+    {error}
+  </div>
+);
+}
+
+if (!dashboardData) {
+  return <div>No dashboard data available.</div>;
+}
+
+  const statCards = [
+    {
+      title: "TODAY'S BOOKINGS",
+      value: dashboardData.totalToday.toString(),
+      subtitle: "Today's bookings",
+      icon: CalendarDays,
+      borderColor: "border-l-black",
+      subtitleColor: "text-gray-500",
+    },
+    {
+      title: "THIS WEEK",
+      value: dashboardData.totalThisWeek.toString(),
+      subtitle: "This week's bookings",
+      icon: Calendar,
+      borderColor: "border-l-[#B96A45]",
+      subtitleColor: "text-gray-500",
+    },
+    {
+      title: "THIS MONTH",
+      value: dashboardData.totalThisMonth.toString(),
+      subtitle: "This month's bookings",
+      icon: Clock3,
+      borderColor: "border-l-black",
+      subtitleColor: "text-[#C26D57]",
+    },
+    {
+      title: "PENDING",
+      value: dashboardData.pendingConfirmations.toString(),
+      subtitle: "Pending confirmations",
+      icon: Users,
+      borderColor: "border-l-black",
+      subtitleColor: "text-gray-500",
+    },
+  ];
+
+  return (
+    <main className="flex-1 overflow-y-auto bg-[#F8F7F4] px-8 py-8">
+      <div className="w-full">
         <Header />
+
         <div className="mb-8">
           <h1 className="text-[36px] font-serif font-semibold text-[#2B2B2B]">
             Service Overview
           </h1>
 
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="mt-1 text-sm text-gray-500">
             Welcome back, Julian. Here's what's happening today.
           </p>
         </div>
 
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          {DASHBOARD_STATS.map((item, index) => (
+        <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+          {statCards.map((card) => (
             <StatCard
-              key={index}
-              title={item.title}
-              value={item.value}
-              subtitle={item.subtitle}
-              icon={item.icon}
-              borderColor={item.borderColor}
-              subtitleColor={item.subtitleColor}
+              key={card.title}
+              title={card.title}
+              value={card.value}
+              subtitle={card.subtitle}
+              icon={card.icon}
+              borderColor={card.borderColor}
+              subtitleColor={card.subtitleColor}
             />
           ))}
         </div>
 
-        
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+          <div className="lg:col-span-2">
+            <WeeklyRevenueChart />
+          </div>
 
-       <div className="lg:col-span-2">
-         <WeeklyRevenueChart />
-         </div>
-          
           <div>
             <ActivityPanel />
           </div>
-
         </div>
-
       </div>
     </main>
   );
