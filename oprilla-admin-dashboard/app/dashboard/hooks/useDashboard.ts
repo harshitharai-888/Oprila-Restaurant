@@ -14,13 +14,20 @@ export function useDashboard() {
 
   const [loading, setLoading] = useState(true);
 
+  const [error, setError] = useState<string | null>(null);
+
   useEffect(() => {
     async function fetchDashboard() {
       try {
         const response = await getDashboardData();
         setDashboardData(response.data);
+        setError(null);
       } catch (error) {
-        console.error(error);
+        setError(
+          error instanceof Error
+            ? error.message
+            : "Unable to load dashboard data. Please try again later."
+        );
       } finally {
         setLoading(false);
       }
@@ -32,5 +39,6 @@ export function useDashboard() {
   return {
     dashboardData,
     loading,
+    error,
   };
 }
