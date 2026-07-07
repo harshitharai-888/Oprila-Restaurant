@@ -17,9 +17,8 @@ async function fetchWithErrorHandling(endpoint: string) {
       throw new Error("Unable to load data. Please try again later.");
     }
 
-    return await response.json();
-  } catch (error) {
-    console.error("API Error:", error);
+     return await response.json();
+  } catch {
     throw new Error("Unable to load data. Please try again later.");
   }
 }
