@@ -30,6 +30,7 @@ public interface IAppointmentService
     Task<List<AppointmentResponse>> GetTodayAsync();
     Task<DashboardStatsResponse> GetDashboardAsync();
     Task<List<AvailableSlotResponse>> GetAvailabilityAsync(AvailabilityQueryRequest req);
+    
 
     Task<AppointmentResponse> CreateAsync(CreateAppointmentRequest req, string? callSessionId = null);
     Task<AppointmentResponse?> UpdateAsync(int id, UpdateAppointmentRequest req);
