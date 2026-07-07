@@ -1,29 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import {
-  getRecentActivities,
-  RecentActivity,
-} from "../Services/dashboard.service";
+import { RecentActivity } from "../app/dashboard/services/dashboardService";
+import { useRecentActivities } from "../hooks/useDashboard";
 
 export default function RecentActivityPanel() {
-  const [activities, setActivities] = useState<RecentActivity[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function loadActivities() {
-      try {
-        const data = await getRecentActivities();
-        setActivities(data);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    loadActivities();
-  }, []);
+  const { activities, loading } = useRecentActivities();
 
   if (loading) {
     return (
@@ -51,7 +32,7 @@ export default function RecentActivityPanel() {
             No recent activities
           </p>
         ) : (
-          activities.map((activity) => (
+          activities.map((activity: RecentActivity) => (
             <div
               key={activity.id}
               className="bg-[#F9F5F0] rounded-xl p-4"
@@ -77,15 +58,13 @@ export default function RecentActivityPanel() {
               </div>
 
               <p className="text-[12px] text-[#6B7280] mt-2">
-                Started:
-                {" "}
+                Started:{" "}
                 {new Date(activity.startedAt).toLocaleString()}
               </p>
 
               {activity.endedAt && (
                 <p className="text-[12px] text-[#9CA3AF]">
-                  Ended:
-                  {" "}
+                  Ended:{" "}
                   {new Date(activity.endedAt).toLocaleString()}
                 </p>
               )}

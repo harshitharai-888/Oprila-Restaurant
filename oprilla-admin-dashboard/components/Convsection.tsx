@@ -1,18 +1,11 @@
-import { useEffect, useState } from "react";
+"use client";
+
 import ChatBubble from "./ChatBubble";
-import {
-  getConversationTranscript,
-  ConversationTranscript,
-} from "../Services/dashboard.service"; 
+import { ConversationTranscript } from "../app/dashboard/services/dashboardService";
+import { useConversationTranscript } from "../hooks/useDashboard";
 
 export default function ConversationSection() {
-  const [conversations, setConversations] = useState<ConversationTranscript[]>([]);
-
-  useEffect(() => {
-    getConversationTranscript()
-      .then((data: ConversationTranscript[]) => setConversations(data))
-      .catch((error) => console.error(error));
-  }, []);
+  const { conversations } = useConversationTranscript();
 
   return (
     <div className="w-full bg-white border border-[#E6E1DA] rounded-xl p-4 md:p-6 overflow-hidden">
@@ -21,13 +14,19 @@ export default function ConversationSection() {
       </h2>
 
       <div className="space-y-3">
-        {conversations.map((conversation) => (
-          <ChatBubble
-            key={conversation.id}
-            sender={conversation.speaker}
-            message={conversation.message}
-          />
-        ))}
+        {conversations.length === 0 ? (
+          <p className="text-gray-500 text-sm">
+            No conversation found
+          </p>
+        ) : (
+          conversations.map((conversation: ConversationTranscript) => (
+            <ChatBubble
+              key={conversation.id}
+              sender={conversation.speaker}
+              message={conversation.message}
+            />
+          ))
+        )}
       </div>
     </div>
   );

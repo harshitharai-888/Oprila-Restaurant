@@ -1,41 +1,98 @@
-export const getDashboardData = () => {
-  return {
-    bookings: 0,
-    activeCalls: 0,
-    occupancy: "85%",
-    customers: 12,
-  };
-};
+export interface Appointment {
+  id: number;
+  customerName: string;
+  customerPhone: string;
+  guestCount: number;
+  status: string;
+  specialRequests?: string;
+}
 
-export const getRecentActivities = () => {
-  return [
-    {
-      title: "Booking Confirmed",
-      description: "Table for 4 reserved at 8:00 PM",
-      time: "5 minutes ago",
-    },
-    {
-      title: "New Customer Registered",
-      description: "Customer account created successfully",
-      time: "20 minutes ago",
-    },
-    {
-      title: "Reservation Rescheduled",
-      description: "Booking moved from 7:30 PM to 8:15 PM",
-      time: "1 hour ago",
-    },
-  ];
+export interface RecentActivity {
+  id: number;
+  callerPhone: string;
+  status: string;
+  startedAt: string;
+  endedAt?: string;
+}
+
+export interface ConversationTranscript {
+  id: number;
+  callHistoryId: number;
+  speaker: string;
+  message: string;
+  createdAt: string;
+}
+
 const API_URL = "http://localhost:5232/api";
 
-export const getRecentActivities = async () => {
-  const res = await fetch(`${API_URL}/dashboard/recent-activity`);
+const TOKEN =
+  "YOUR_JWT_TOKEN_HERE";
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch recent activities");
+export async function getAppointments(): Promise<Appointment[]> {
+  try {
+    const response = await fetch(
+      `${API_URL}/admin/appointments`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${TOKEN}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch appointments");
+    }
+
+    const result = await response.json();
+
+    console.log("Appointments:", result);
+
+    return result.data.items ?? result.data ?? [];
+  } catch (error) {
+    console.error("Appointments Error:", error);
+    return [];
+  }
+}
+
+export async function getRecentActivities(): Promise<RecentActivity[]> {
+  try {
+    const response = await fetch(
+      `${API_URL}/admin/appointments/recent-activities`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${TOKEN}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP Error: ${response.status}`);
+    }
+
+    const result = await response.json();
+
+    console.log("Recent Activities:", result);
+
+    return result.data ?? [];
+  } catch (error) {
+    console.error("Recent Activities Error:", error);
+    return [];
+  }
+}
+
+export const getConversationTranscript = async () => {
+  const response = await fetch(
+   `${API_URL}/admin/appointments/conversation-transcript`,
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch conversation transcript");
   }
 
-  const json = await res.json();
-
-  // backend response: { success, message, data }
-  return json.data;
+  return response.json();
 };
+
