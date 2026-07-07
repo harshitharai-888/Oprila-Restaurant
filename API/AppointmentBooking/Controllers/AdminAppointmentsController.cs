@@ -72,7 +72,7 @@ public class AdminAppointmentsController(IAppointmentService svc) : ControllerBa
     }
 
     [HttpGet("recent-activities")]
-    [AllowAnonymous]
+    
     public async Task<IActionResult> GetRecentActivities()
     {
         var result = await _svc.GetRecentActivityAsync();
@@ -86,7 +86,7 @@ public class AdminAppointmentsController(IAppointmentService svc) : ControllerBa
     }
 
     [HttpGet("conversation-transcript")]
-    [AllowAnonymous]
+    
     public async Task<IActionResult> GetConversationTranscript()
     {
         var result = await _svc.GetConversationTranscriptAsync();
