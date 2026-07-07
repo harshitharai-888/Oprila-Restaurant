@@ -8,11 +8,23 @@ import ActivityPanel from "./ActivityPanel";
 import { useDashboard } from "../hooks/useDashboard";
 
 export default function Dashboard() {
-  const { dashboardData, loading } = useDashboard();
+  const { dashboardData, loading, error } = useDashboard();
 
-  if (loading || !dashboardData) {
-    return <div>Loading...</div>;
-  }
+if (loading) {
+  return <div>Loading...</div>;
+}
+
+if (error) {
+  return (
+  <div className="flex items-center justify-center h-full text-red-600">
+    {error}
+  </div>
+);
+}
+
+if (!dashboardData) {
+  return <div>No dashboard data available.</div>;
+}
 
   const statCards = [
     {
