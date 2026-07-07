@@ -1,54 +1,106 @@
-export interface ChatMessage {
-sender: string;
-message: string;
+export interface Appointment {
+  id: number;
+  customerName: string;
+  customerPhone: string;
+  guestCount: number;
+  status: string;
+  specialRequests?: string;
 }
 
-export const getConversationTranscript = (): ChatMessage[] => {
-return [
-{
-sender: "AI Assistant",
-message:
-"Good afternoon. Thank you for calling Maitre D' Pro Bistro. How may I assist you with your reservation today?",
-},
-{
-sender: "Customer",
-message:
-"Hi, I'd like to reserve a table for four people this evening.",
-},
-{
-sender: "AI Assistant",
-message:
-"Certainly. We have availability tonight. What time would you prefer?",
-},
-{
-sender: "Customer",
-message:
-"Around 8:00 PM would be perfect.",
-},
-{
-sender: "AI Assistant",
-message:
-"Wonderful. I can reserve a table for four at 8:00 PM. Would you prefer indoor seating or a booth?",
-},
-{
-sender: "Customer",
-message:
-"A booth would be great if one is available.",
-},
-{
-sender: "AI Assistant",
-message:
-"Absolutely. I've reserved a booth table for four guests at 8:00 PM this evening.",
-},
-{
-sender: "Customer",
-message:
-"Perfect, thank you very much.",
-},
-{
-sender: "AI Assistant",
-message:
-"You're welcome. Your reservation has been confirmed. We look forward to serving you tonight. Have a wonderful day!",
-},
-];
+export interface RecentActivity {
+  id: number;
+  callerPhone: string;
+  status: string;
+  startedAt: string;
+  endedAt?: string;
+}
+
+export interface ConversationTranscript {
+  id: number;
+  callHistoryId: number;
+  speaker: string;
+  message: string;
+  createdAt: string;
+}
+
+
+const API_URL = "http://localhost:5232/api";
+
+const TOKEN =
+     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwidW5pcXVlX25hbWUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AcmVzdGF1cmFudC5jb20iLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbiIsImp0aSI6IjBmYzJiYjlhLTA2MTEtNDQyNS1iMDc2LTYyYmQ5ZTI4MGFmNiIsIm5iZiI6MTc4MzM5NTY1OCwiZXhwIjoxNzgzNDI0NDU4LCJpc3MiOiJSZXN0YXVyYW50QVBJIiwiYXVkIjoiUmVzdGF1cmFudEFQSUNsaWVudHMifQ.1-B3-lrZgDsfzUgEdrJw8HBSQDjOnFyLICBQIe7gRPs";
+export async function getAppointments(): Promise<Appointment[]> {
+  try {
+    const response = await fetch(
+      `${API_URL}/admin/appointments`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${TOKEN}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch appointments");
+    }
+
+    const result = await response.json();
+
+    console.log("Appointments:", result);
+
+    return result.data.items ?? result.data ?? [];
+  } catch (error) {
+    console.error("Appointments Error:", error);
+    return [];
+  }
+}
+
+export async function getRecentActivities(): Promise<RecentActivity[]> {
+  try {
+    const response = await fetch(
+      `${API_URL}/admin/appointments/recent-activities`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${TOKEN}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP Error: ${response.status}`);
+    }
+
+    const result = await response.json();
+
+    console.log("Recent Activities:", result);
+
+    return result.data ?? [];
+  } catch (error) {
+    console.error("Recent Activities Error:", error);
+    return [];
+  }
+}
+
+export const getConversationTranscript = async () => {
+  const token = localStorage.getItem("token");
+
+  const response = await fetch(
+    `${API_URL}/admin/appointments/conversation-transcript`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch conversation transcript");
+  }
+
+  return response.json();
 };
