@@ -67,6 +67,14 @@ public class AppointmentService(AppDbContext db) : IAppointmentService
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();
+  var allItems = await q.ToListAsync();
+
+  var items = allItems
+      .OrderByDescending(a => a.AppointmentDate)
+      .ThenBy(a => a.StartTime)
+      .Skip((page - 1) * pageSize)
+      .Take(pageSize)
+      .ToList();
         return new PagedResponse<AppointmentResponse>
         {
             Items = items.Select(Map).ToList(),

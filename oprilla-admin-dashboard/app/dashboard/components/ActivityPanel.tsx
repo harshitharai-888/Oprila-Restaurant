@@ -100,5 +100,21 @@ export default function ActivityPanel() {
 
       </div>
     </div>
-  );
+
+    <div className="space-y-8">
+      {activityCards.map((card) => (
+        <AIActivityCard
+          key={card.title}
+          title={card.title}
+          status={card.status}
+          statusBg={card.statusBg}
+          statusText={card.statusText}
+          dotColor={card.dotColor}
+          description={card.description}
+          footer={card.footer}
+        />
+      ))}
+    </div>
+  </div>
+);
 }
