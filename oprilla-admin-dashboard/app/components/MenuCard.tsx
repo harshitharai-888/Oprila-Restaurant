@@ -28,18 +28,18 @@ export default function MenuCard({
         <img
           src={image}
           alt={title}
-          className="w-full h-24 object-cover"
+           className="w-full h-full object-cover"
         />
 
         {/* SOLD OUT Badge */}
         {soldOut && (
-          <div className="absolute top-3 left-3 bg-red-600 text-white px-2 py-1 rounded-md text-[10px] font-semibold z-20">
+          <div className="absolute top-3 left-3 bg-red-600 text-white px-2 py-1 rounded-md text-[10px] font-semibold">
             SOLD OUT
           </div>
         )}
 
         {/* Price */}
-        <div className="absolute top-3 right-3 bg-white text-black px-3 py-1 rounded-lg shadow-md font-bold text-sm z-20">
+        <div className="absolute top-3 right-3 bg-white text-black px-3 py-1 rounded-lg shadow-md font-bold text-sm">
           {price}
         </div>
       </div>
