@@ -1,12 +1,30 @@
-
+import FeaturedCard from "./TempFeaturedCard";
 import MenuCard from "./MenuCard";
-import { MenuItem } from "../menu/service/menuservice";
 
-interface MainsSectionProps {
-  items: MenuItem[];
-}
+const menuItems = [
+  {
+    id: 1,
+    image:
+      "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=800",
+    title: "Black Truffle Tagliatelle",
+    description: "House-made pasta, winter black truffle...",
+    price: "$32.00",
+    available: true,
+    actionText: "Sales",
+  },
+  {
+    id: 2,
+    image:
+      "https://images.unsplash.com/photo-1559847844-5315695dadae?w=800",
+    title: "Grilled Branzino",
+    description: "Sustainably sourced, lemon-herb stuffing...",
+    price: "$45.00",
+    available: true,
+    actionText: "Sales",
+  },
+];
 
-export default function MainsSection({ items }: MainsSectionProps) {
+export default function MainsSection() {
   return (
     <section className="mt-14">
       {/* Header */}
@@ -17,26 +35,33 @@ export default function MainsSection({ items }: MainsSectionProps) {
           </h2>
 
           <span className="text-sm text-gray-500">
-            ({items.length} items)
+            (18 items)
           </span>
         </div>
 
         <button className="text-sm text-gray-500 hover:text-black transition">
-          Reorder Category
+          Reorder Category =
         </button>
       </div>
 
-      
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-        {items.map((item) => (
+      {/* Cards */}
+      <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
+        <FeaturedCard
+          image="https://images.unsplash.com/photo-1544025162-d76694265947?w=800"
+          title="Dry-Aged Prime Ribeye"
+          description="45-day dry aged in house. Served with confit garlic, tallow butter, and smoked salt. Our best-selling steak cut for the current quarter."
+          price="$68.00"
+        />
+
+        {menuItems.map((item) => (
           <MenuCard
             key={item.id}
-            image={item.imageUrl}
-            title={item.name}
+            image={item.image}
+            title={item.title}
             description={item.description}
-            price={`$${item.price}`}
-            available={item.isAvailable}
-            actionText="View Sales"
+            price={item.price}
+            available={item.available}
+            actionText={item.actionText}
           />
         ))}
       </div>
