@@ -1,88 +1,76 @@
-export default function RecentActivityPanel() {
-  return (
-    <div className="w-[280px] bg-white border-r border-[#E6E1DA]">
+"use client";
 
-      <div className="p-6 border-b border-[#E7E1D9]">
-      <h2 className="text-3xl font-extrabold text-[#111827]">
-        Recent Activity
+import { RecentActivity } from "../app/dashboard/services/dashboardService";
+import { useRecentActivities } from "../hooks/useDashboard";
+
+export default function RecentActivityPanel() {
+  const { activities, loading } = useRecentActivities();
+
+  if (loading) {
+    return (
+      <div className="w-[300px] p-6 bg-white rounded-2xl shadow">
+        Loading...
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-[300px] bg-white rounded-2xl border border-[#ECE7E1] p-6">
+      <h2 className="text-[34px] font-bold leading-9 text-[#111827]">
+        Recent
+        <br />
+        Activity
       </h2>
 
-        <p className="text-xs text-gray-500 mt-1">
-          AI Concierge logs for today
-        </p>
-      </div>
+      <p className="text-[12px] text-[#8B8B8B] mt-2 mb-6">
+        AI Concierge logs for today
+      </p>
 
-      {/* Activity List */}
-      <div className="p-4 space-y-4">
-
-        {/* Active Item */}
-        <div className="bg-[#FBF3EC] border border-[#F2E1D2] rounded-xl p-4 cursor-pointer">
-
-          <p className="text-lg font-extrabold text-[#111827]">
-            +1 (555) 012-4492
+      <div className="space-y-4">
+        {activities.length === 0 ? (
+          <p className="text-gray-500 text-sm">
+            No recent activities
           </p>
+        ) : (
+          activities.map((activity: RecentActivity) => (
+            <div
+              key={activity.id}
+              className="bg-[#F9F5F0] rounded-xl p-4"
+            >
+              <h3 className="text-[24px] font-bold text-[#111827] leading-7">
+                {activity.callerPhone}
+              </h3>
 
-          <p className="text-xs font-semibold text-green-600 mt-1">
-            POSITIVE • 4m 32s
-          </p>
+              <div className="mt-2">
+                <span
+                  className={`text-[11px] font-semibold uppercase ${
+                    activity.status === "Completed"
+                      ? "text-green-600"
+                      : activity.status === "Pending"
+                      ? "text-yellow-600"
+                      : activity.status === "Failed"
+                      ? "text-red-600"
+                      : "text-gray-600"
+                  }`}
+                >
+                  {activity.status}
+                </span>
+              </div>
 
-          <p className="text-sm text-[#6B7280] mt-2">
-            Table booked for 4 at 8:00 PM tonight...
-          </p>
+              <p className="text-[12px] text-[#6B7280] mt-2">
+                Started:{" "}
+                {new Date(activity.startedAt).toLocaleString()}
+              </p>
 
-        </div>
-
-        {/* Item 2 */}
-        <div className="p-4 rounded-xl hover:bg-[#F9F7F4] cursor-pointer transition">
-
-          <p className="text-lg font-extrabold text-[#111827]">
-            +1 (555) 089-1123
-          </p>
-
-          <p className="text-xs text-[#6B7280] mt-1">
-            NEUTRAL • 1m 15s
-          </p>
-
-          <p className="text-sm text-[#6B7280] mt-2">
-            Inquiry about gluten-free pasta options...
-          </p>
-
-        </div>
-
-        {/* Item 3 */}
-        <div className="p-4 rounded-xl hover:bg-[#F9F7F4] cursor-pointer transition">
-
-          <p className="text-lg font-extrabold text-[#111827]">
-            +1 (555) 044-8832
-          </p>
-
-          <p className="text-xs text-green-600 mt-1">
-            POSITIVE • 2m 45s
-          </p>
-
-          <p className="text-sm text-[#6B7280] mt-2">
-            Confirmed existing booking...
-          </p>
-
-        </div>
-
-        {/* Item 4 */}
-        <div className="p-4 rounded-xl hover:bg-[#F9F7F4] cursor-pointer transition">
-
-          <p className="text-lg font-extrabold text-[#111827]">
-            +1 (555) 077-2210
-          </p>
-
-          <p className="text-xs text-[#6B7280] mt-1">
-            MISSED • 55s
-          </p>
-
-          <p className="text-sm text-[#6B7280] mt-2">
-            Disconnected before finishing order...
-          </p>
-
-        </div>
-
+              {activity.endedAt && (
+                <p className="text-[12px] text-[#9CA3AF]">
+                  Ended:{" "}
+                  {new Date(activity.endedAt).toLocaleString()}
+                </p>
+              )}
+            </div>
+          ))
+        )}
       </div>
     </div>
   );

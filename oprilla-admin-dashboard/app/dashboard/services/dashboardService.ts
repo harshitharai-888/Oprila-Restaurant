@@ -1,44 +1,98 @@
+export interface Appointment {
+  id: number;
+  customerName: string;
+  customerPhone: string;
+  guestCount: number;
+  status: string;
+  specialRequests?: string;
+}
+
+export interface RecentActivity {
+  id: number;
+  callerPhone: string;
+  status: string;
+  startedAt: string;
+  endedAt?: string;
+}
+
+export interface ConversationTranscript {
+  id: number;
+  callHistoryId: number;
+  speaker: string;
+  message: string;
+  createdAt: string;
+}
+
 const API_URL = "http://localhost:5232/api";
 
+const TOKEN =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwidW5pcXVlX25hbWUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AcmVzdGF1cmFudC5jb20iLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbiIsImp0aSI6IjA0YmE0MjdmLTBkZjMtNDA3My1hOGFkLWEzYjI4MTZkODhmOCIsIm5iZiI6MTc4MzQxMDI1OSwiZXhwIjoxNzgzNDM5MDU5LCJpc3MiOiJSZXN0YXVyYW50QVBJIiwiYXVkIjoiUmVzdGF1cmFudEFQSUNsaWVudHMifQ.aevXJNIhRo6KvDBc7UiQQqmLOB-wAx2IBiiQw8AgiD8";
 
-const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwidW5pcXVlX25hbWUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AcmVzdGF1cmFudC5jb20iLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbiIsImp0aSI6IjA2NDU1YzY2LTZiNTQtNGFkOS04YjU2LTI1ZjAyYWE4YWUxNiIsIm5iZiI6MTc4MzM1NDY2NCwiZXhwIjoxNzgzMzgzNDY0LCJpc3MiOiJSZXN0YXVyYW50QXBpIiwiYXVkIjoiUmVzdGF1cmFudENsaWVudCJ9.1Uj_BYBrAjYQfo9NJvncEIY8wg4O0E0CN1LwM7-B4EY";
-
-async function fetchWithErrorHandling(endpoint: string) {
+export async function getAppointments(): Promise<Appointment[]> {
   try {
-    const response = await fetch(`${API_URL}${endpoint}`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${TOKEN}`,
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await fetch(
+      `${API_URL}/admin/appointments`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${TOKEN}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     if (!response.ok) {
-      throw new Error("Unable to load data. Please try again later.");
+      throw new Error("Failed to fetch appointments");
     }
 
-     return await response.json();
-  } catch {
-    throw new Error("Unable to load data. Please try again later.");
+    const result = await response.json();
+
+    console.log("Appointments:", result);
+
+    return result.data.items ?? result.data ?? [];
+  } catch (error) {
+    console.error("Appointments Error:", error);
+    return [];
   }
 }
 
-export async function getDashboardData() {
-  return fetchWithErrorHandling("/admin/appointments/dashboard");
+export async function getRecentActivities(): Promise<RecentActivity[]> {
+  try {
+    const response = await fetch(
+      `${API_URL}/admin/appointments/recent-activities`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${TOKEN}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP Error: ${response.status}`);
+    }
+
+    const result = await response.json();
+
+    console.log("Recent Activities:", result);
+
+    return result.data ?? [];
+  } catch (error) {
+    console.error("Recent Activities Error:", error);
+    return [];
+  }
 }
 
-export async function getAIActivity() {
-  const result = await fetchWithErrorHandling(
-    "/admin/appointments/ai-activity"
+export const getConversationTranscript = async () => {
+  const response = await fetch(
+   `${API_URL}/admin/appointments/conversation-transcript`,
   );
 
-  return result.data;
-}
+  if (!response.ok) {
+    throw new Error("Failed to fetch conversation transcript");
+  }
 
-export async function getWeeklyRevenue() {
-  const result = await fetchWithErrorHandling(
-    "/admin/appointments/weekly-revenue"
-  );
+  return response.json();
+};
 
-  return result.data;
-}
